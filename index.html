@@ -13,12 +13,11 @@
   <style>
     :root {
       --bg-dark: #070913;
-      --panel-bg: rgba(18, 24, 46, 0.88);
-      --panel-border: rgba(99, 102, 241, 0.38);
+      --panel-bg: #11172e;
+      --panel-border: rgba(99, 102, 241, 0.45);
       --accent-cyan: #00f0ff;
       --accent-gold: #fbbf24;
       --accent-magenta: #f43f5e;
-      --text-glow: 0 0 14px rgba(0, 240, 255, 0.8);
     }
 
     * {
@@ -47,7 +46,7 @@
       align-items: center;
       justify-content: flex-start;
       gap: 10px;
-      padding: 10px 12px 20px 12px;
+      padding: 8px 12px 18px 12px;
       overflow-x: hidden;
     }
 
@@ -67,17 +66,15 @@
       position: relative;
       z-index: 10;
       width: 100%;
-      max-width: 430px;
+      max-width: 390px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 8px 12px;
       background: var(--panel-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border-radius: 16px;
-      border: 1px solid var(--panel-border);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      border: 1.5px solid var(--panel-border);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
     }
 
     .stat-group {
@@ -90,8 +87,8 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #0a0e1c;
+      border: 1px solid rgba(255, 255, 255, 0.14);
       padding: 5px 10px;
       border-radius: 20px;
       font-size: 12px;
@@ -104,7 +101,7 @@
     .stat-badge.streak { color: #f97316; }
 
     .hud-btn {
-      background: rgba(255, 255, 255, 0.08);
+      background: #1e2640;
       border: 1px solid rgba(255, 255, 255, 0.18);
       color: #fff;
       width: 34px;
@@ -114,19 +111,24 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.15s;
+      transition: transform 0.1s;
     }
     .hud-btn:active { transform: scale(0.9); }
 
-    /* ================= KOTAK JAWABAN ================= */
-    .target-wrapper {
+    /* ================= KOLOM MELINGKAR 1: KOTAK JAWABAN ================= */
+    .answer-deck-pod {
       position: relative;
       z-index: 10;
+      width: 100%;
+      max-width: 390px;
+      padding: 10px 14px;
+      border-radius: 24px;
+      background: #0e1529;
+      border: 1.5px solid rgba(0, 240, 255, 0.45);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 2px;
-      width: 100%;
     }
 
     .target-container {
@@ -138,54 +140,57 @@
       max-width: 100%;
     }
 
+    /* UKURAN KOTAK SAMA PERSIS UNTUK 4, 5, DAN 6 KOTAK */
     .slot {
+      width: 44px;
+      height: 50px;
       border-radius: 12px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.55));
-      border: 2px solid rgba(99, 102, 241, 0.5);
+      background: #18223d;
+      border: 2px solid rgba(99, 102, 241, 0.6);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
+      font-size: 21px;
       color: #fff;
       text-transform: uppercase;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.55), inset 0 2px 2px rgba(255,255,255,0.15);
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transition: transform 0.15s ease;
     }
 
     .slot.filled {
-      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      background: #3730a3;
       border-color: var(--accent-cyan);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.7), inset 0 2px 4px rgba(255,255,255,0.5);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.7);
       transform: translateY(-2px) scale(1.05);
       color: #ffffff;
     }
 
     .slot.shake {
-      animation: slotShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      animation: slotShake 0.4s both;
       border-color: var(--accent-magenta);
-      background: rgba(244, 63, 94, 0.3);
+      background: #4c1122;
     }
 
     .preview-pill {
-      height: 32px;
-      min-width: 120px;
+      height: 30px;
+      min-width: 110px;
       padding: 0 16px;
       margin-top: 6px;
       border-radius: 20px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(0, 240, 255, 0.5);
-      box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+      background: #0a0e1c;
+      border: 1.5px solid rgba(0, 240, 255, 0.6);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
       letter-spacing: 3px;
       color: var(--accent-cyan);
-      text-shadow: var(--text-glow);
       opacity: 0;
       transform: scale(0.85);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: opacity 0.15s, transform 0.15s;
     }
 
     .preview-pill.active {
@@ -193,18 +198,21 @@
       transform: scale(1);
     }
 
-    /* ================= WHEEL ARENA ================= */
-    .wheel-main-layout {
+    /* ================= KOLOM MELINGKAR 2: ARENA RODA & TOMBOL ================= */
+    .arena-deck-pod {
       position: relative;
       z-index: 10;
+      width: 100%;
+      max-width: 390px;
+      padding: 14px 12px;
+      border-radius: 32px;
+      background: #0e1529;
+      border: 1.5px solid rgba(99, 102, 241, 0.5);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       gap: 12px;
-      width: 100%;
-      max-width: 430px;
-      margin-top: 4px;
     }
 
     .wheel-container {
@@ -219,9 +227,9 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.98) 70%, rgba(10, 15, 30, 1) 100%);
-      border: 2px solid rgba(99, 102, 241, 0.4);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75), inset 0 0 30px rgba(0, 240, 255, 0.1);
+      background: #141c33;
+      border: 2px solid rgba(99, 102, 241, 0.5);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
     }
 
     .wheel-core {
@@ -232,16 +240,17 @@
       height: 48px;
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(0, 240, 255, 0.15));
-      border: 1px solid rgba(0, 240, 255, 0.4);
+      background: #1b2645;
+      border: 1.5px solid rgba(0, 240, 255, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
       pointer-events: none;
     }
-    .wheel-core svg { width: 20px; height: 20px; fill: rgba(0, 240, 255, 0.8); }
+    .wheel-core svg { width: 20px; height: 20px; fill: var(--accent-cyan); }
 
-    canvas#laserCanvas {
+    /* SISTEM VEKTOR SVG HD */
+    svg#laserSvg {
       position: absolute;
       top: 0;
       left: 0;
@@ -254,7 +263,7 @@
     .letter-node {
       position: absolute;
       border-radius: 50%;
-      background: linear-gradient(145deg, #1e293b, #0f172a);
+      background: #1a2238;
       border: 2px solid rgba(255, 255, 255, 0.25);
       color: #f8fafc;
       font-weight: 900;
@@ -262,28 +271,27 @@
       align-items: center;
       justify-content: center;
       transform: translate(-50%, -50%);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55), inset 0 1px 2px rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
       z-index: 10;
-      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s, border-color 0.2s;
+      transition: transform 0.12s ease, background 0.15s ease;
     }
 
     .letter-node.active {
-      background: linear-gradient(135deg, #00f0ff, #3b82f6);
+      background: #00f0ff;
       color: #030712;
       border-color: #ffffff;
       transform: translate(-50%, -50%) scale(1.18);
-      box-shadow: 0 0 24px rgba(0, 240, 255, 0.95), inset 0 2px 4px rgba(255,255,255,0.7);
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.95);
     }
 
-    /* ================= TOMBOL DI BAWAH LINGKARAN ================= */
+    /* TOMBOL KONTROL */
     .bottom-controls-bar {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       justify-content: center;
       align-items: center;
       width: 100%;
       max-width: 320px;
-      margin-top: 4px;
     }
 
     .bottom-btn {
@@ -293,13 +301,13 @@
       justify-content: center;
       gap: 8px;
       padding: 10px 14px;
-      background: linear-gradient(145deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.98));
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #192138;
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
       border-radius: 14px;
       color: #f1f5f9;
       cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-      transition: transform 0.15s, border-color 0.15s;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+      transition: transform 0.1s ease;
     }
     .bottom-btn:active {
       transform: scale(0.93);
@@ -311,20 +319,18 @@
       font-size: 11px;
       color: var(--accent-gold);
       font-weight: 800;
-      background: rgba(251, 191, 36, 0.18);
+      background: rgba(251, 191, 36, 0.2);
       padding: 2px 6px;
       border-radius: 8px;
     }
 
-    /* ================= KREDIT TIKTOK ================= */
+    /* KREDIT TIKTOK */
     .creator-credit-box {
-      margin-top: 12px;
-      padding: 6px 18px;
+      padding: 5px 16px;
       border-radius: 20px;
-      background: rgba(15, 23, 42, 0.85);
+      background: #090e1a;
       border: 1.5px solid rgba(0, 240, 255, 0.45);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
-      font-size: 12px;
+      font-size: 11.5px;
       color: #cbd5e1;
       letter-spacing: 0.5px;
       text-align: center;
@@ -332,7 +338,21 @@
     .creator-credit-box strong {
       color: var(--accent-cyan);
       font-weight: 900;
-      text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+    }
+
+    /* TULISAN TAUTAN PALING BAWAH */
+    .footer-web-link {
+      position: relative;
+      z-index: 10;
+      margin-top: 4px;
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .footer-web-link a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 700;
     }
 
     /* ================= MODAL & POPUP SISTEM ================= */
@@ -343,27 +363,26 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, rgba(15, 23, 42, 0.92) 0%, rgba(7, 9, 19, 0.98) 100%);
-      backdrop-filter: blur(10px);
+      background: rgba(4, 7, 16, 0.94);
       z-index: 90;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.2s ease;
       padding: 20px;
     }
     .modal-overlay.show { opacity: 1; pointer-events: auto; }
     
     .modal-card {
-      background: rgba(30, 41, 59, 0.96);
-      border: 1px solid var(--panel-border);
+      background: #141b30;
+      border: 1.5px solid var(--panel-border);
       padding: 24px 20px;
       border-radius: 20px;
       text-align: center;
       max-width: 320px;
       width: 100%;
-      transform: scale(0.8);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75);
+      transform: scale(0.85);
+      transition: transform 0.25s ease;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
     }
     .modal-overlay.show .modal-card { transform: scale(1); }
 
@@ -371,9 +390,7 @@
       font-size: 26px;
       font-weight: 900;
       letter-spacing: 1.5px;
-      background: linear-gradient(135deg, #00f0ff, #facc15);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--accent-cyan);
       margin-bottom: 8px;
     }
     .modal-desc { font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 16px; }
@@ -383,14 +400,13 @@
       padding: 12px;
       border-radius: 12px;
       border: none;
-      background: linear-gradient(135deg, #4f46e5, #00f0ff);
+      background: #00f0ff;
       color: #030712;
       font-weight: 900;
       font-size: 14px;
       letter-spacing: 1px;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.45);
-      transition: transform 0.15s;
+      transition: transform 0.1s;
     }
     .modal-btn:active { transform: scale(0.96); }
 
@@ -447,14 +463,14 @@
     </div>
   </header>
 
-  <!-- KOTAK JAWABAN DINAMIS -->
-  <main class="target-wrapper">
+  <!-- KOLOM MELINGKAR 1: KOTAK JAWABAN -->
+  <section class="answer-deck-pod">
     <div class="target-container" id="targetContainer"></div>
     <div class="preview-pill" id="previewPill"></div>
-  </main>
+  </section>
 
-  <!-- ARENA RODA, TOMBOL & KREDIT TIKTOK -->
-  <section class="wheel-main-layout">
+  <!-- KOLOM MELINGKAR 2: ARENA RODA + TOMBOL + TIKTOK -->
+  <section class="arena-deck-pod">
     <div class="wheel-container" id="wheel">
       <div class="wheel-disc"></div>
       <div class="wheel-core">
@@ -462,7 +478,12 @@
           <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
         </svg>
       </div>
-      <canvas id="laserCanvas"></canvas>
+
+      <!-- SISTEM VEKTOR SVG HD -->
+      <svg id="laserSvg" viewBox="0 0 250 250">
+        <path id="laserGlow" fill="none" stroke="rgba(0, 240, 255, 0.45)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+        <path id="laserCore" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
     </div>
 
     <!-- TOMBOL KONTROL -->
@@ -488,6 +509,11 @@
       Dibuat oleh TikTok: <strong>@gabutzzz_2121</strong>
     </div>
   </section>
+
+  <!-- TULISAN TAUTAN PALING BAWAH DI TENGAH -->
+  <footer class="footer-web-link">
+    Mau bermain? Kunjungi web ini: <a href="https://game-tebak-kata-delta.vercel.app/" target="_blank">https://game-tebak-kata-delta.vercel.app/</a>
+  </footer>
 
   <!-- MODAL SELEBRASI BABAK -->
   <div class="modal-overlay" id="celebrationOverlay">
@@ -784,7 +810,7 @@
     }
 
     /* ================= 3. STATE & LOCAL STORAGE ================= */
-    const STORAGE_KEY = "NEXUS_WORD_SAVE_DATA_V6";
+    const STORAGE_KEY = "NEXUS_WORD_SAVE_DATA_V10";
     let gameState = {
       level: 1,
       score: 0,
@@ -838,8 +864,61 @@
       document.getElementById('dailyRewardOverlay').classList.remove('show');
     });
 
-    /* ================= 4. GENERATOR SOAL (HANYA 3 KECOHAN) ================= */
-    const commonTrapLetters = ["A", "E", "I", "U", "O", "R", "S", "T", "N", "K", "M", "L", "B", "P", "D"];
+    /* ================= 4. GENERATOR KATA & PENG鈍COH SANGAT MENGECOH ================= */
+    function getSmartDeceptiveDistractors(targetWord) {
+      const targetLen = targetWord.length;
+      const targetChars = targetWord.split('');
+      const distractors = [];
+
+      // 1. Cari kata-kata jebakan di database yang sangat mirip (beda 1-2 huruf saja)
+      const trapCandidates = rawWordDatabase.filter(w => {
+        const upper = w.toUpperCase();
+        if (upper === targetWord) return false;
+        if (upper.length < 4 || upper.length > 6) return false;
+        let match = 0;
+        const temp = [...targetChars];
+        for (let ch of upper) {
+          const idx = temp.indexOf(ch);
+          if (idx !== -1) {
+            match++;
+            temp.splice(idx, 1);
+          }
+        }
+        return match >= targetLen - 1;
+      });
+
+      // Ambil huruf yang melengkapi kata-kata jebakan tersebut
+      for (let trapWord of trapCandidates) {
+        const upper = trapWord.toUpperCase();
+        const tempTarget = [...targetChars];
+        for (let ch of upper) {
+          const idx = tempTarget.indexOf(ch);
+          if (idx !== -1) {
+            tempTarget.splice(idx, 1);
+          } else {
+            if (!distractors.includes(ch)) {
+              distractors.push(ch);
+            }
+          }
+        }
+        if (distractors.length >= 3) break;
+      }
+
+      // 2. Jika kurang, tambahkan 1 huruf kembar dari kata target
+      if (distractors.length < 3) {
+        const randomTargetChar = targetChars[Math.floor(Math.random() * targetChars.length)];
+        distractors.push(randomTargetChar);
+      }
+
+      // 3. Jika masih kurang, lengkapi dengan huruf umum bahasa Indonesia yang paling menjebak
+      const commonTraps = ["A", "E", "S", "R", "N", "T", "K", "L", "O", "I", "M", "P", "B", "D"];
+      while (distractors.length < 3) {
+        const trap = commonTraps[Math.floor(Math.random() * commonTraps.length)];
+        distractors.push(trap);
+      }
+
+      return distractors.slice(0, 3);
+    }
 
     function generateRandomStage() {
       const lengths = [4, 5, 6];
@@ -850,21 +929,7 @@
       else if (chosenLength === 6) pool = words6;
 
       const targetWord = pool[Math.floor(Math.random() * pool.length)];
-      const targetLetters = targetWord.split('');
-      const distractors = [];
-
-      // Tepat 3 huruf kecohan
-      const distractorCount = 3;
-
-      // 1. Ambil 1 huruf kembar dari target
-      const randomTargetChar = targetLetters[Math.floor(Math.random() * targetLetters.length)];
-      distractors.push(randomTargetChar);
-
-      // 2. Ambil 2 huruf jebakan
-      while (distractors.length < distractorCount) {
-        const trap = commonTrapLetters[Math.floor(Math.random() * commonTrapLetters.length)];
-        distractors.push(trap);
-      }
+      const distractors = getSmartDeceptiveDistractors(targetWord);
 
       return {
         answer: targetWord,
@@ -872,7 +937,7 @@
       };
     }
 
-    /* ================= 5. LOGIKA WHEEL ================= */
+    /* ================= 5. LOGIKA WHEEL (ANTI-TERBENTUK BERURUTAN) ================= */
     let currentStageData = null;
     let selectedNodes = [];
     let isDragging = false;
@@ -881,20 +946,12 @@
     let currentHitRadius = 26;
 
     const wheel = document.getElementById('wheel');
-    const laserCanvas = document.getElementById('laserCanvas');
-    const ctx = laserCanvas.getContext('2d');
+    const laserGlow = document.getElementById('laserGlow');
+    const laserCore = document.getElementById('laserCore');
     const targetContainer = document.getElementById('targetContainer');
     const previewPill = document.getElementById('previewPill');
     const celebrationOverlay = document.getElementById('celebrationOverlay');
     const celebrationTitle = document.getElementById('celebrationTitle');
-
-    function resizeCanvas() {
-      const dpr = Math.max(window.devicePixelRatio || 1, 2);
-      laserCanvas.width = wheel.clientWidth * dpr;
-      laserCanvas.height = wheel.clientHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    window.addEventListener('resize', resizeCanvas);
 
     function startLevel() {
       currentStageData = generateRandomStage();
@@ -904,31 +961,43 @@
       previewPill.classList.remove('active');
 
       targetContainer.innerHTML = '';
-      let boxW = 48, boxH = 54, fontSize = 23;
-      if (wordLen === 5) { boxW = 42; boxH = 48; fontSize = 20; }
-      else if (wordLen === 6) { boxW = 36; boxH = 42; fontSize = 18; }
-
       for (let i = 0; i < wordLen; i++) {
         const slot = document.createElement('div');
         slot.className = 'slot';
-        slot.style.width = `${boxW}px`;
-        slot.style.height = `${boxH}px`;
-        slot.style.fontSize = `${fontSize}px`;
         targetContainer.appendChild(slot);
       }
 
-      // Total hanya 7, 8, atau 9 huruf
       activeLettersPool = [...currentStageData.answer.split(''), ...currentStageData.distractors];
-      shuffleLetters(activeLettersPool);
+      
+      // Acak dengan algoritma perlindungan agar kata jawaban tidak terbentuk berurutan di lingkaran
+      safeCircularShuffle(activeLettersPool, currentStageData.answer);
       spawnWheelNodes(activeLettersPool);
       drawLaser();
     }
 
-    function shuffleLetters(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
+    // ALGORITMA: MENJAMIN KATA TARGET TIDAK PERNAH URUT DI LINGKARAN
+    function safeCircularShuffle(arr, targetWord) {
+      let attempts = 0;
+      do {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+
+        // Gandakan string untuk memeriksa alur melingkar (searah & berlawanan jarum jam)
+        const circleStr = arr.join('') + arr.join('');
+        const revCircleStr = [...arr].reverse().join('') + [...arr].reverse().join('');
+
+        const containsTarget = circleStr.includes(targetWord) || revCircleStr.includes(targetWord);
+        const prefix3 = targetWord.slice(0, 3);
+        const containsPrefix = circleStr.includes(prefix3) || revCircleStr.includes(prefix3);
+
+        // Jika tidak terbentuk kata target maupun 3 huruf pertamanya berjejer, pengacakan sah!
+        if (!containsTarget && !containsPrefix) {
+          break;
+        }
+        attempts++;
+      } while (attempts < 100);
     }
 
     function spawnWheelNodes(letters) {
@@ -937,8 +1006,8 @@
 
       const count = letters.length;
       const radius = 94;
-      const centerX = wheel.clientWidth / 2;
-      const centerY = wheel.clientHeight / 2;
+      const centerX = 125;
+      const centerY = 125;
 
       let nodeSize = 46, nodeFont = 22;
       currentHitRadius = 26;
@@ -968,38 +1037,28 @@
     }
 
     function drawLaser() {
-      ctx.clearRect(0, 0, wheel.clientWidth, wheel.clientHeight);
-      if (selectedNodes.length === 0) return;
+      if (selectedNodes.length === 0) {
+        laserGlow.setAttribute('d', '');
+        laserCore.setAttribute('d', '');
+        return;
+      }
 
-      ctx.beginPath();
-      ctx.lineWidth = 8;
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
+      let pathStr = '';
       selectedNodes.forEach((node, idx) => {
         const x = parseFloat(node.style.left);
         const y = parseFloat(node.style.top);
-        if (idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        pathStr += (idx === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
       });
-      if (isDragging) ctx.lineTo(pointerPos.x, pointerPos.y);
-      ctx.stroke();
 
-      ctx.beginPath();
-      ctx.lineWidth = 3.5;
-      ctx.strokeStyle = '#ffffff';
-      selectedNodes.forEach((node, idx) => {
-        const x = parseFloat(node.style.left);
-        const y = parseFloat(node.style.top);
-        if (idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      if (isDragging) ctx.lineTo(pointerPos.x, pointerPos.y);
-      ctx.stroke();
+      if (isDragging) {
+        pathStr += ` L ${pointerPos.x} ${pointerPos.y}`;
+      }
+
+      laserGlow.setAttribute('d', pathStr);
+      laserCore.setAttribute('d', pathStr);
     }
 
-    /* ================= 6. SENTUHAN & GESTUR ================= */
+    /* ================= 6. SENTUHAN & GESTUR (GARIS TERKUNCI DALAM LINGKARAN) ================= */
     wheel.addEventListener('pointerdown', (e) => {
       initAudio();
       isDragging = true;
@@ -1023,8 +1082,24 @@
 
     function updatePointer(e) {
       const rect = wheel.getBoundingClientRect();
-      pointerPos.x = e.clientX - rect.left;
-      pointerPos.y = e.clientY - rect.top;
+      const scaleX = 250 / rect.width;
+      const scaleY = 250 / rect.height;
+      const rawX = (e.clientX - rect.left) * scaleX;
+      const rawY = (e.clientY - rect.top) * scaleY;
+
+      // Garis tidak bisa keluar dari batas lingkaran
+      const dx = rawX - 125;
+      const dy = rawY - 125;
+      const dist = Math.hypot(dx, dy);
+      const maxRadius = 116;
+
+      if (dist > maxRadius) {
+        pointerPos.x = 125 + (dx / dist) * maxRadius;
+        pointerPos.y = 125 + (dy / dist) * maxRadius;
+      } else {
+        pointerPos.x = rawX;
+        pointerPos.y = rawY;
+      }
     }
 
     function detectLetter(clientX, clientY) {
@@ -1119,7 +1194,7 @@
     document.getElementById('shuffleBtn').addEventListener('click', () => {
       triggerHaptic(25);
       playTone(550, 'triangle', 0.12, 0.45);
-      shuffleLetters(activeLettersPool);
+      safeCircularShuffle(activeLettersPool, currentStageData.answer);
       spawnWheelNodes(activeLettersPool);
     });
 
@@ -1171,17 +1246,15 @@
       }
     });
 
-    /* ================= 9. SISTEM KONFETI HD ================= */
+    /* ================= 9. SISTEM KONFETI ENTENG ================= */
     const confCanvas = document.getElementById('confettiCanvas');
     const confCtx = confCanvas.getContext('2d');
     let confetti = [];
     let isConfettiActive = false;
 
     function resizeConfetti() {
-      const dpr = Math.max(window.devicePixelRatio || 1, 2);
-      confCanvas.width = window.innerWidth * dpr;
-      confCanvas.height = window.innerHeight * dpr;
-      confCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      confCanvas.width = window.innerWidth;
+      confCanvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resizeConfetti);
     resizeConfetti();
@@ -1189,13 +1262,13 @@
     function launchConfetti() {
       confetti = [];
       const colors = ['#00f0ff', '#fbbf24', '#f43f5e', '#a855f7', '#38bdf8', '#ffffff'];
-      for (let i = 0; i < 90; i++) {
+      for (let i = 0; i < 75; i++) {
         confetti.push({
           x: window.innerWidth / 2,
           y: window.innerHeight / 2,
-          vx: (Math.random() - 0.5) * 18,
-          vy: (Math.random() - 0.85) * 18,
-          size: Math.random() * 8 + 4,
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.85) * 16,
+          size: Math.random() * 7 + 4,
           color: colors[Math.floor(Math.random() * colors.length)],
           tilt: Math.random() * 10,
           tiltAngle: 0,
@@ -1235,7 +1308,6 @@
     }
     renderConfetti();
 
-    resizeCanvas();
     loadSavedGame();
     startLevel();
   </script>
