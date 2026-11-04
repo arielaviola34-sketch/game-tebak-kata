@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#070913">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Nexus Word Matrix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070913;
+      --panel-bg: rgba(18, 24, 46, 0.88);
+      --panel-border: rgba(99, 102, 241, 0.38);
+      --accent-cyan: #00f0ff;
+      --accent-gold: #fbbf24;
+      --accent-magenta: #f43f5e;
+      --text-glow: 0 0 14px rgba(0, 240, 255, 0.8);
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      touch-action: manipulation;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 5%, rgba(99, 102, 241, 0.28) 0%, transparent 45%),
+        radial-gradient(circle at 85% 70%, rgba(244, 63, 94, 0.16) 0%, transparent 40%),
+        radial-gradient(circle at 15% 85%, rgba(0, 240, 255, 0.16) 0%, transparent 40%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 10px 12px 14px 12px;
+      overflow: hidden;
+    }
+
+    /* Background Grid Tajam */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ================= DASHBOARD HUD ================= */
+    .dashboard-header {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 430px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .stat-group {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .stat-badge.level { color: #a5b4fc; border-color: rgba(99, 102, 241, 0.5); }
+    .stat-badge.score { color: var(--accent-cyan); }
+    .stat-badge.coins { color: var(--accent-gold); }
+    .stat-badge.streak { color: #f97316; }
+
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .hud-btn:active { transform: scale(0.9); }
+
+    /* ================= KOTAK JAWABAN ================= */
+    .target-wrapper {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 2px;
+      width: 100%;
+    }
+
+    .target-container {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      align-items: center;
+      padding: 4px;
+      max-width: 100%;
+    }
+
+    .slot {
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.55));
+      border: 2px solid rgba(99, 102, 241, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #fff;
+      text-transform: uppercase;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.55), inset 0 2px 2px rgba(255,255,255,0.15);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .slot.filled {
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.7), inset 0 2px 4px rgba(255,255,255,0.5);
+      transform: translateY(-2px) scale(1.05);
+      color: #ffffff;
+    }
+
+    .slot.shake {
+      animation: slotShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      border-color: var(--accent-magenta);
+      background: rgba(244, 63, 94, 0.3);
+    }
+
+    .preview-pill {
+      height: 32px;
+      min-width: 120px;
+      padding: 0 16px;
+      margin-top: 6px;
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--accent-cyan);
+      text-shadow: var(--text-glow);
+      opacity: 0;
+      transform: scale(0.85);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .preview-pill.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ================= WHEEL ARENA ================= */
+    .wheel-main-layout {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 430px;
+      margin-top: 4px;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      touch-action: none;
+      flex-shrink: 0;
+    }
+
+    .wheel-disc {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.98) 70%, rgba(10, 15, 30, 1) 100%);
+      border: 2px solid rgba(99, 102, 241, 0.4);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75), inset 0 0 30px rgba(0, 240, 255, 0.1);
+    }
+
+    .disc-ring-decor {
+      position: absolute;
+      inset: 14px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(255, 255, 255, 0.18);
+      pointer-events: none;
+      animation: slowRotate 45s linear infinite;
+    }
+
+    .wheel-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 48px;
+      height: 48px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(0, 240, 255, 0.15));
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .wheel-core svg { width: 20px; height: 20px; fill: rgba(0, 240, 255, 0.8); }
+
+    canvas#laserCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .letter-node {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      color: #f8fafc;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55), inset 0 1px 2px rgba(255, 255, 255, 0.25);
+      z-index: 10;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s, border-color 0.2s;
+    }
+
+    .letter-node.active {
+      background: linear-gradient(135deg, #00f0ff, #3b82f6);
+      color: #030712;
+      border-color: #ffffff;
+      transform: translate(-50%, -50%) scale(1.18);
+      box-shadow: 0 0 24px rgba(0, 240, 255, 0.95), inset 0 2px 4px rgba(255,255,255,0.7);
+    }
+
+    /* ================= TOMBOL DI BAWAH LINGKARAN ================= */
+    .bottom-controls-bar {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 4px;
+    }
+
+    .bottom-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      color: #f1f5f9;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .bottom-btn:active {
+      transform: scale(0.93);
+      border-color: var(--accent-cyan);
+    }
+    .bottom-btn svg { width: 20px; height: 20px; fill: currentColor; }
+    .bottom-btn .btn-text { font-size: 13px; font-weight: 800; letter-spacing: 0.8px; }
+    .bottom-btn .cost-badge {
+      font-size: 11px;
+      color: var(--accent-gold);
+      font-weight: 800;
+      background: rgba(251, 191, 36, 0.18);
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+
+    /* ================= WATERMARK KREDIT TIKTOK ================= */
+    .creator-credit {
+      position: relative;
+      z-index: 10;
+      margin-top: auto;
+      padding-top: 6px;
+      text-align: center;
+    }
+    .credit-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+    }
+    .credit-badge strong {
+      color: var(--accent-cyan);
+      font-weight: 800;
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+    }
+
+    /* ================= MODAL & POPUP SISTEM ================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(15, 23, 42, 0.92) 0%, rgba(7, 9, 19, 0.98) 100%);
+      backdrop-filter: blur(10px);
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    
+    .modal-card {
+      background: rgba(30, 41, 59, 0.96);
+      border: 1px solid var(--panel-border);
+      padding: 24px 20px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      transform: scale(0.8);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75);
+    }
+    .modal-overlay.show .modal-card { transform: scale(1); }
+
+    .modal-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      background: linear-gradient(135deg, #00f0ff, #facc15);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .modal-desc { font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 16px; }
+
+    .modal-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #4f46e5, #00f0ff);
+      color: #030712;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.45);
+      transition: transform 0.15s;
+    }
+    .modal-btn:active { transform: scale(0.96); }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    @keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes slotShake {
+      10%, 90% { transform: translate3d(-3px, 0, 0); }
+      20%, 80% { transform: translate3d(5px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+
+  <!-- DASHBOARD HEADER -->
+  <header class="dashboard-header">
+    <div class="stat-group">
+      <div class="stat-badge level">
+        <span id="levelLabel">LV. 1</span>
+      </div>
+      <div class="stat-badge score">
+        <span>SKOR</span>
+        <span id="scoreVal">0</span>
+      </div>
+      <div class="stat-badge streak">
+        <span>🔥</span>
+        <span id="streakVal">0</span>
+      </div>
+    </div>
+
+    <div class="stat-group">
+      <div class="stat-badge coins">
+        <span>🪙</span>
+        <span id="coinVal">350</span>
+      </div>
+      <button class="hud-btn" id="soundToggle" title="Audio">
+        <svg id="soundIcon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+      </button>
+      <button class="hud-btn" id="resetBtn" title="Mulai Ulang">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- KOTAK JAWABAN DINAMIS -->
+  <main class="target-wrapper">
+    <div class="target-container" id="targetContainer"></div>
+    <div class="preview-pill" id="previewPill"></div>
+  </main>
+
+  <!-- ARENA RODA & TOMBOL DI BAWAHNYA -->
+  <section class="wheel-main-layout">
+    <!-- Roda Lingkaran Huruf -->
+    <div class="wheel-container" id="wheel">
+      <div class="wheel-disc"></div>
+      <div class="disc-ring-decor"></div>
+      <div class="wheel-core">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
+        </svg>
+      </div>
+      <canvas id="laserCanvas"></canvas>
+    </div>
+
+    <!-- TOMBOL KONTROL DI BAWAH LINGKARAN -->
+    <div class="bottom-controls-bar">
+      <button class="bottom-btn" id="shuffleBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+        </svg>
+        <span class="btn-text">ACAK</span>
+      </button>
+
+      <button class="bottom-btn" id="hintBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
+        </svg>
+        <span class="btn-text">BANTU</span>
+        <span class="cost-badge">-50 🪙</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- KREDIT TIKTOK (TAJAM & ELEGAN) -->
+  <footer class="creator-credit">
+    <div class="credit-badge">
+      <span>Dibuat oleh TikTok: <strong>@gabutzzz_2121</strong></span>
+    </div>
+  </footer>
+
+  <!-- MODAL SELEBRASI BABAK -->
+  <div class="modal-overlay" id="celebrationOverlay">
+    <div class="modal-card">
+      <div class="modal-title" id="celebrationTitle">LUAR BIASA!</div>
+      <div class="modal-desc">Kata berhasil terhubung dengan tepat!</div>
+      <div style="font-weight: 800; color: var(--accent-gold); margin-bottom: 16px;">+150 SKOR &nbsp;•&nbsp; +30 🪙</div>
+      <button class="modal-btn" id="nextLevelBtn">LANJUTKAN</button>
+    </div>
+  </div>
+
+  <!-- MODAL HADIAH HARIAN -->
+  <div class="modal-overlay" id="dailyRewardOverlay">
+    <div class="modal-card">
+      <div class="modal-title">HADIAH HARIAN!</div>
+      <div class="modal-desc">Selamat datang kembali! Klaim bonus harian Anda untuk bermain hari ini.</div>
+      <div style="font-size: 28px; margin-bottom: 15px;">🪙 <strong>+100 KOIN</strong></div>
+      <button class="modal-btn" id="claimDailyBtn">KLAIM SEKARANG</button>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <script>
+    /* ================= 1. DATABASE KATA ASLI ================= */
+    const rawWordDatabase = [
+      "abad", "abadi", "abah", "abdi", "abon", "acak", "adab", "adalah", "adegan", "adem",
+      "adil", "adinda", "adonan", "aduh", "aduhai", "aduk", "afrika", "agak", "agama", "agar",
+      "agen", "agensi", "ahli", "ajaib", "ajak", "ajang", "ajaran", "ajuan", "akal", "akan",
+      "akar", "akbar", "akibat", "akik", "aksara", "akses", "aksi", "akta", "aktif", "aktual",
+      "akur", "akurat", "alam", "alami", "alarm", "alasan", "alat", "alga", "alih", "aliran",
+      "alis", "alpa", "alot", "alumni", "amal", "amarah", "amat", "amatir", "ambang", "amblas",
+      "ambigu", "ambisi", "ambrol", "ambruk", "amin", "amplop", "ampuh", "ampun", "anarki", "ancam",
+      "anda", "aneka", "angan", "anggap", "anggur", "angin", "angka", "angkuh", "angsur", "animo",
+      "anjlok", "anonim", "anoa", "antar", "antara", "anti", "anting", "antre", "anyam", "apapun",
+      "aparat", "apek", "apel", "apotek", "april", "arah", "arak", "arang", "arca", "area",
+      "arena", "arisan", "arloji", "armada", "arsip", "arti", "artis", "arus", "arwah", "asam",
+      "asap", "asas", "asbes", "aset", "asia", "asin", "asinan", "asing", "asli", "asma",
+      "asmara", "aspek", "asrama", "aster", "asyik", "atap", "atas", "atasan", "atlet", "atma",
+      "atur", "audio", "aula", "aurora", "awak", "awang", "awan", "awas", "ayah", "ayat",
+      "babad", "babak", "baca", "bacaan", "badai", "badan", "bagai", "bagan", "bagasi", "bagian",
+      "bahan", "bahas", "bahasa", "bahaya", "bahkan", "bahu", "bahwa", "baik", "bait", "baja",
+      "bajak", "bajing", "baju", "bakal", "bakat", "bakiak", "bakpia", "bakso", "bakti", "bakul",
+      "bakwan", "baku", "balada", "balap", "balas", "bali", "balik", "balita", "balkon", "balok",
+      "balon", "bambu", "bandar", "bandel", "bang", "bangga", "bangsa", "bangun", "bantal", "bantu",
+      "banyak", "bapak", "barat", "baris", "barter", "baru", "basmi", "basket", "basuh", "bata",
+      "batal", "batang", "batas", "batih", "batik", "batin", "batok", "batu", "batuk", "baut",
+      "bawa", "bawah", "bawang", "bayam", "bayang", "bayar", "bayi", "beban", "bebas", "becak",
+      "beda", "bedah", "bedak", "begitu", "bekal", "bekas", "beken", "beku", "belas", "belati",
+      "beliau", "belok", "belut", "bemo", "benak", "benang", "benar", "benda", "benih", "bentak",
+      "bentuk", "berada", "berani", "berat", "beri", "berita", "berkah", "berkas", "berkat", "bersih",
+      "bersin", "besan", "besar", "besi", "besok", "besuk", "betis", "beton", "betul", "biak",
+      "biang", "biar", "bias", "biasa", "biaya", "bibi", "bibir", "bibit", "bicara", "bidan",
+      "bidang", "bidik", "bijak", "biji", "bikin", "bila", "bilang", "biliun", "bina", "bintik",
+      "biola", "biota", "biro", "biru", "bisa", "bisik", "bising", "bisnis", "bisu", "bobot",
+      "bocah", "boga", "bogor", "bohlam", "boikot", "bola", "bolos", "bolong", "bolu", "bontot",
+      "bonus", "bordir", "borgol", "borok", "borong", "bosan", "botak", "botol", "buah", "buaya",
+      "bubar", "bubuk", "bubur", "budaya", "budi", "bugar", "buku", "bulan", "bulat", "bumbu",
+      "bumi", "buncis", "bundar", "bunga", "buntut", "bunuh", "bunyi", "bupati", "buron", "buru",
+      "burung", "bursa", "busana", "busi", "busuk", "buta", "butir", "butuh", "cabai", "cabang",
+      "cabut", "cacar", "cadar", "cagar", "cair", "cairan", "cakap", "cakar", "cakram", "cakup",
+      "camar", "cambuk", "campak", "campur", "canda", "candi", "candu", "cantik", "capai", "capek",
+      "capung", "cara", "cari", "catat", "catur", "cebur", "cedera", "cegah", "cekal", "cekcok",
+      "celah", "celana", "cemara", "centil", "cepat", "cerah", "cerdas", "cerita", "cermat", "cermin",
+      "cerutu", "cetak", "cewek", "cibir", "cicak", "cicil", "cicip", "cikal", "cilik", "cincin",
+      "cinta", "ciprat", "cipta", "ciri", "cita", "citra", "cium", "ciut", "coba", "cobek",
+      "colek", "colok", "contoh", "corak", "coret", "cowok", "cuaca", "cucu", "cuci", "cuka",
+      "cukup", "cuma", "curam", "curang", "curi", "cuti", "dada", "dadar", "dadu", "daerah",
+      "daftar", "dagang", "daging", "dagu", "dahaga", "dahan", "dahi", "dahulu", "daku", "dakwah",
+      "dalang", "dalih", "dalam", "damai", "damba", "dampak", "dana", "danau", "dandan", "dansa",
+      "dapat", "dapur", "dara", "darah", "darat", "dari", "dasar", "dasi", "daster", "data",
+      "datang", "daulat", "daun", "dawai", "daya", "dayung", "debat", "debu", "decak", "dedak",
+      "dekan", "dekap", "dekade", "dekat", "delima", "delman", "delusi", "demam", "demo", "dempul",
+      "denah", "denda", "dengar", "dengan", "dentum", "denyut", "depan", "depot", "deputi", "dering",
+      "derita", "desain", "desak", "desa", "desir", "detail", "detik", "dewa", "dewasa", "diakui",
+      "dialek", "dialog", "diam", "didik", "diet", "diksi", "dilema", "dinas", "dini", "diri",
+      "diskon", "dobel", "dokter", "dolar", "dompet", "donasi", "donat", "donor", "dorong", "dosis",
+      "dosen", "drama", "duet", "dugaan", "duit", "dukun", "dukung", "dunia", "duta", "dingin",
+      "eceran", "edaran", "edisi", "edit", "editan", "editor", "efek", "ejaan", "ejek", "ekor",
+      "eksis", "ekspor", "elegan", "elok", "emas", "embun", "ember", "emoji", "empang", "empati",
+      "empat", "empedu", "empu", "empuk", "enak", "enam", "encer", "endap", "energi", "enggak",
+      "enggan", "engsel", "entah", "enteng", "entri", "enzim", "erat", "eropa", "erosi", "eselon",
+      "esensi", "etika", "etnis", "elang", "emosi", "fabel", "faedah", "fajar", "fakta", "faktor",
+      "fakir", "famili", "fase", "fasih", "fauna", "figur", "figura", "fiksi", "film", "filter",
+      "final", "fisik", "fisika", "fiskal", "fitnah", "flora", "fobia", "fokus", "folder", "formal",
+      "format", "fosfor", "foto", "fungsi", "gabah", "gabung", "gadai", "gadis", "gaduh", "gagah",
+      "gagang", "gagas", "gagak", "gaib", "gaji", "gajah", "galak", "galah", "galau", "galeri",
+      "gali", "galon", "gamang", "gambar", "gambas", "ganda", "gandum", "gang", "ganggu", "ganjil",
+      "ganti", "gapai", "gapura", "garam", "garang", "garap", "garasi", "gardu", "garis", "garpu",
+      "garuda", "gatal", "gaul", "gaun", "gaung", "gawang", "gaya", "gayung", "gebrak", "gedung",
+      "gejala", "gelak", "gelang", "gelap", "gelas", "gelora", "gema", "gembok", "gempa", "gempal",
+      "gemuk", "genap", "gendut", "genta", "gentar", "gerai", "gerak", "gertak", "gerutu", "gesek",
+      "gesit", "getar", "giat", "gigih", "gigit", "gila", "giling", "gimbal", "giring", "gitar",
+      "gizi", "global", "gombal", "gong", "goreng", "gosip", "gosok", "gotong", "gram", "grafik",
+      "gratis", "grup", "guci", "gudang", "gudeg", "gugat", "gugur", "gula", "gulai", "gulat",
+      "guling", "gulita", "gulma", "gumam", "guna", "gundul", "gunung", "gurih", "gurita", "guru",
+      "habis", "hadap", "hadiah", "hadir", "hajar", "haji", "hakim", "halal", "halang", "halau",
+      "halte", "haluan", "halus", "hama", "hamba", "hambar", "hambat", "hampa", "hampir", "hancur",
+      "handal", "handuk", "hanger", "hangat", "hangus", "hantar", "hantam", "hantu", "hanya", "hanyut",
+      "hapus", "harga", "hari", "harta", "haru", "harus", "hasil", "hasrat", "hasut", "hati",
+      "haus", "hayat", "hayati", "hebat", "heboh", "helai", "helium", "helm", "hemat", "hembus",
+      "hempas", "hendak", "henti", "heran", "herbal", "hewan", "hias", "hibur", "hidung", "hidup",
+      "hijau", "hikmah", "hilang", "hilir", "himpun", "hingga", "hirau", "hitam", "hobi", "honor",
+      "hotel", "hujan", "hukum", "hulu", "humor", "hunian", "huruf", "hutan", "ibadah", "ibarat",
+      "idaman", "idola", "ijazah", "ikat", "ikatan", "ikhlas", "iklim", "ikon", "ikrar", "ikut",
+      "ilham", "ilmiah", "ilmu", "ilusi", "imaji", "imam", "imbang", "imbas", "imbau", "imlek",
+      "impor", "impas", "impian", "imun", "inang", "inci", "indah", "induk", "infus", "ingat",
+      "ingin", "ingkar", "ingus", "injak", "insan", "instan", "intan", "intai", "intro", "intrik",
+      "ipar", "irit", "istana", "itik", "iuran", "izin", "jabat", "jadi", "jadwal", "jaga",
+      "jago", "jagoan", "jagung", "jahat", "jahe", "jahil", "jajah", "jajar", "jajak", "jajal",
+      "jaket", "jakun", "jala", "jalan", "jalin", "jalur", "jamak", "jambu", "jamin", "jamur",
+      "janda", "jangan", "jangka", "janji", "janur", "jarak", "jari", "jaring", "jasa", "jatah",
+      "jati", "jatuh", "jauh", "jawa", "jawab", "jawara", "jaya", "jeda", "jejak", "jejer",
+      "jejaka", "jelas", "jelek", "jelita", "jelma", "jemaah", "jemari", "jempol", "jemput", "jemur",
+      "jenaka", "jenis", "jenius", "jepang", "jerami", "jernih", "jerit", "jeruk", "jurnal", "juta",
+      "jodoh", "joget", "jompo", "juara", "jubah", "juang", "judi", "judul", "juli", "jumat",
+      "jumlah", "jurang", "juri", "justru", "jingga", "kabar", "kabel", "kabur", "kabut", "kaca",
+      "kacang", "kacau", "kadang", "kadar", "kado", "kaget", "kagum", "kail", "kain", "kais",
+      "kait", "kaji", "kakak", "kakap", "kakek", "kaki", "kakao", "kala", "kalah", "kalap",
+      "kalian", "kalau", "kalbu", "kaldu", "kaleng", "kali", "kalung", "kamar", "kambuh", "kamera",
+      "kamis", "kampus", "kamu", "kamus", "kanal", "kanan", "kancah", "kancil", "kandas", "kangen",
+      "kano", "kanopi", "kantin", "kantor", "kantuk", "kanvas", "kapal", "kapak", "kapas", "kapten",
+      "kapsul", "kapuk", "kapur", "karam", "karate", "kardus", "karena", "kargo", "karier", "karib",
+      "karsa", "karpet", "karton", "kartu", "karun", "karung", "karya", "kasa", "kaset", "kasih",
+      "kasino", "kasir", "kasta", "kasti", "kasur", "kasus", "kata", "katak", "katup", "kaum",
+      "kawah", "kawin", "kawan", "kawat", "kayak", "kayu", "kayuh", "kaya", "kebal", "kebas",
+      "kebaya", "kebun", "kecan", "kecapi", "kecap", "kecewa", "kecil", "kecoak", "kedai", "kedok",
+      "kejar", "kelabu", "keladi", "kelam", "kelapa", "kelas", "keliru", "kelola", "kemah", "kemang",
+      "kemari", "kemas", "kemeja", "kemudi", "kenal", "kenari", "kening", "kental", "kenapa", "keok",
+      "kepala", "kepang", "keping", "keras", "kerang", "kerbau", "kere", "kereta", "kering", "keris",
+      "kerja", "keren", "kerlip", "kernet", "kerok", "kertas", "keruk", "kesal", "keset", "ketela",
+      "khas", "khayal", "khusus", "kiamat", "kiblat", "kijang", "kikir", "kikil", "kilat", "kimia",
+      "kina", "kincir", "kini", "kiper", "kiprah", "kiri", "kirim", "kisah", "kismis", "kitab",
+      "kita", "klaim", "klien", "klinis", "klub", "koala", "koar", "kode", "kodok", "koin",
+      "kolam", "kolase", "koloni", "koma", "komik", "komisi", "komite", "kompor", "konsep", "konser",
+      "kontan", "konten", "kopi", "korban", "kornea", "korona", "kosong", "kota", "kotor", "koyak",
+      "kredit", "krem", "kribo", "krim", "krisis", "kritis", "kroni", "kuasa", "kubah", "kubus",
+      "kubu", "kucing", "kuda", "kuil", "kuis", "kulkas", "kuliah", "kulit", "kultur", "kuman",
+      "kumis", "kumpul", "kunci", "kuncup", "kuning", "kuno", "kuping", "kurang", "kurma", "kursi",
+      "kurung", "kurus", "kurun", "kusir", "kusut", "kusam", "kusuma", "kutip", "kutub", "kutuk",
+      "kuota", "laba", "labil", "labrak", "laci", "lada", "ladang", "laga", "lagi", "lagu",
+      "lahan", "lahap", "lahar", "lain", "lajang", "laju", "lajur", "lakban", "laknat", "lakon",
+      "laku", "lalat", "lalu", "lama", "lamban", "lambat", "lampau", "lampu", "lancar", "lancip",
+      "landa", "langit", "langka", "lantai", "lantas", "lapak", "lapang", "lapor", "larang", "laras",
+      "lari", "laris", "laron", "larut", "laser", "latah", "latih", "laut", "lautan", "lauk",
+      "lava", "lawan", "lawak", "lawas", "layak", "layan", "lebam", "lebar", "lebih", "lega",
+      "leher", "lelah", "lelang", "lemah", "lemari", "lembar", "lembut", "lemak", "lembur", "lensa",
+      "lenyap", "lepas", "lereng", "lesu", "letih", "lewat", "lezat", "libur", "liga", "lihat",
+      "lima", "limit", "limbah", "lini", "lintah", "lintas", "lipat", "lirik", "lisan", "liter",
+      "loak", "lobak", "logika", "lokasi", "lolos", "lomba", "loreng", "losmen", "loteng", "luang",
+      "lubang", "lucu", "luhur", "lukis", "luluh", "lulur", "lulus", "lumat", "lumpuh", "lumpur",
+      "lumut", "luntur", "luruh", "lusa", "lusuh", "maaf", "mabuk", "macam", "macan", "macet",
+      "madu", "mafia", "magang", "magis", "magnet", "mahal", "mahar", "mahir", "mahoni", "main",
+      "mainan", "maju", "majas", "makan", "makam", "makin", "maklum", "makna", "makmur", "makro",
+      "malam", "malang", "malas", "maling", "mampir", "mampu", "mana", "mandat", "mandi", "mandor",
+      "mangga", "manis", "manja", "manjur", "mantap", "mantel", "mantra", "mantu", "mantan", "mapan",
+      "marak", "marah", "marga", "mari", "markas", "marmut", "marmer", "martir", "masa", "masak",
+      "masam", "masuk", "masih", "maskot", "mata", "matang", "materi", "mati", "mawar", "mbak",
+      "mebel", "medali", "medis", "mega", "megah", "meja", "mekar", "meluap", "melati", "melodi",
+      "melon", "memar", "mempan", "memuji", "memo", "menang", "menara", "meniti", "mental", "mentah",
+      "mentor", "menit", "menuju", "merah", "merak", "merapi", "merasa", "merdu", "mereka", "merica",
+      "meriah", "mesin", "meteor", "meter", "metode", "metrik", "metro", "mika", "miliun", "milik",
+      "mimbar", "mimpi", "minat", "minggu", "mini", "minum", "minyak", "minim", "misal", "miskin",
+      "misi", "mistik", "mitra", "mobil", "modal", "mode", "modul", "mogok", "mosi", "motor",
+      "moto", "moyang", "muara", "muat", "muda", "mudah", "mulia", "mulus", "mulut", "mundur",
+      "mungil", "mural", "murid", "musim", "musik", "mutasi", "mutu", "nada", "nadir", "nafkah",
+      "naik", "nalar", "nama", "namun", "nampak", "nanar", "nangka", "nanti", "napas", "narasi",
+      "nasib", "nasi", "naskah", "negara", "negeri", "nekat", "nektar", "nenek", "neraca", "netral",
+      "ngeri", "ngilu", "niaga", "niat", "nihil", "nikmat", "nila", "noda", "nomor", "nona",
+      "nonton", "norma", "normal", "nota", "novel", "nuansa", "nuklir", "nyala", "nyaman", "nyamuk",
+      "nyanyi", "nyata", "nyawa", "nyiur", "oasis", "obat", "obeng", "objek", "obor", "obral",
+      "obrol", "odol", "ogah", "ojek", "oknum", "oktaf", "oktan", "olah", "oleh", "oleng",
+      "oles", "ombak", "omega", "omong", "ompong", "omzet", "ongkos", "opera", "opini", "opsi",
+      "optik", "opor", "orang", "oranye", "orbit", "organ", "orkes", "orator", "oval", "oven",
+      "pabrik", "pacar", "pacul", "padam", "padat", "padi", "pagar", "pagi", "pagoda", "paham",
+      "pahala", "pahat", "pahit", "pakan", "pakar", "pakai", "paksa", "paku", "paling", "palu",
+      "palsu", "paman", "pamor", "pamrih", "panas", "panci", "pangku", "pangan", "panah", "panen",
+      "panik", "pantai", "pantas", "panti", "papan", "parade", "parodi", "paras", "parit", "parfum",
+      "paruh", "parut", "pasal", "pasar", "pasir", "pasrah", "pasti", "patah", "paten", "patuh",
+      "patung", "pawai", "pawang", "payung", "pecah", "pecat", "pedas", "pedih", "peduli", "pegang",
+      "pekan", "peka", "pelaku", "pelan", "pelana", "pelik", "peluit", "peluru", "pelet", "pemain",
+      "pendek", "pendam", "pening", "penipu", "penuh", "pepaya", "perahu", "perak", "peras", "perca",
+      "percik", "perlak", "persen", "persis", "perut", "pesat", "pesan", "pesiar", "pesona", "pesta",
+      "peta", "petik", "piagam", "piala", "piatu", "picu", "pidato", "pidana", "pihak", "pijar",
+      "pikat", "piknik", "pikul", "pilar", "pilih", "pilot", "pingit", "pintu", "pipa", "pipi",
+      "piring", "pisau", "pisah", "piston", "pistol", "piyama", "plafon", "plakat", "planet", "pohon",
+      "pokok", "pola", "polisi", "polong", "polusi", "pompa", "popok", "poros", "pose", "posisi",
+      "poster", "potret", "prabu", "pria", "prima", "prisma", "privat", "profesi", "profit", "prosa",
+      "proses", "proyek", "publik", "puas", "puasa", "puisi", "puitis", "pukul", "pukat", "pulang",
+      "pulas", "pulih", "pulpen", "puluh", "punuk", "puncak", "punah", "pusat", "pusar", "puspa",
+      "putih", "putra", "putri", "rabu", "rabuk", "rabun", "racik", "radar", "radang", "raga",
+      "ragam", "rahmat", "raja", "rajin", "raksa", "rakyat", "ramah", "ramai", "rambut", "rangka",
+      "ranjau", "ransel", "rantai", "rantau", "ranum", "rapi", "rapat", "rapor", "rasa", "ratu",
+      "rawan", "rayap", "rayuan", "reaksi", "rebana", "rebung", "rebus", "reda", "redup", "regu",
+      "rekan", "rekrut", "rektor", "relief", "remaja", "remang", "remisi", "rempah", "remuk", "renang",
+      "renda", "rendah", "renyah", "resep", "resmi", "resah", "retak", "reuni", "riba", "ribut",
+      "rilis", "rima", "rimba", "rindu", "ringan", "ring", "ritme", "robek", "roda", "rohani",
+      "roket", "rombak", "rompi", "ronda", "ronde", "rongga", "rontok", "rotan", "roti", "ruang",
+      "ruam", "rubah", "rudal", "rugi", "rugbi", "rukun", "rumah", "rumor", "runyam", "rupiah",
+      "rusa", "rusak", "rusuh", "saat", "sabar", "sablon", "sabtu", "sabun", "sabuk", "sadar",
+      "sagu", "saham", "sajak", "sajian", "sakit", "saksi", "sakti", "sakura", "salam", "salju",
+      "saldo", "salin", "salut", "sama", "samar", "sambal", "sambil", "sambut", "sampah", "sampan",
+      "sampai", "sampul", "samsak", "sandal", "sandi", "sangat", "sangka", "sangsi", "sanksi", "santai",
+      "santan", "santun", "sapi", "sarana", "sarang", "saran", "sarung", "sastra", "satu", "satpam",
+      "saus", "sawah", "sawi", "sawit", "saya", "sayap", "sayur", "sayang", "sebab", "sebuah",
+      "secara", "sedap", "sedia", "sedih", "segar", "segel", "segala", "sehat", "sejuk", "sekoci",
+      "sekop", "sekrup", "sekutu", "sekali", "selera", "selasa", "selai", "selang", "selat", "semak",
+      "semat", "sembuh", "semen", "semi", "semir", "semoga", "sempat", "sempit", "semu", "semua",
+      "semut", "senang", "sendi", "sendok", "sendu", "seng", "sengit", "senin", "sensus", "senter",
+      "sentuh", "senti", "senyum", "seni", "sepak", "sepatu", "sepeda", "serang", "serap", "serbet",
+      "serius", "seru", "sesal", "sesuai", "setuju", "setel", "siaga", "sial", "siasat", "siang",
+      "siapa", "siap", "sihir", "sikap", "sikat", "siku", "silang", "silver", "simak", "simbol",
+      "simpan", "simpul", "sinden", "sini", "sinyal", "siput", "siram", "sirih", "sirip", "sirup",
+      "sisa", "sisik", "sisip", "sisir", "sistem", "siswa", "siswi", "situ", "siuman", "siung",
+      "skala", "skema", "skuat", "skuter", "soda", "sogok", "sopir", "sopran", "sosial", "sosok",
+      "sotong", "spidol", "strata", "studio", "suaka", "suami", "suara", "subjek", "sudah", "suhu",
+      "sukar", "sukses", "sulap", "sulit", "sumber", "sumbat", "sumpit", "sumur", "sumo", "sundul",
+      "sungai", "suruh", "susah", "susu", "swasta", "syarat", "syukur", "taat", "tabel", "tabah",
+      "tabiat", "tabrak", "tabu", "tabuh", "tabung", "tabur", "tadi", "tagih", "tahap", "tahan",
+      "tahu", "tahun", "takdir", "takluk", "takjub", "taksi", "taksir", "takhta", "takut", "takwa",
+      "tamak", "taman", "tamat", "tambak", "tambal", "tameng", "tampil", "tamu", "tampak", "tampan",
+      "tanam", "tancap", "tanda", "tandus", "tangan", "tangga", "tang", "tangki", "tani", "tante",
+      "tanpa", "tanya", "tanah", "tapa", "tapir", "taplak", "taraf", "target", "taring", "tarik",
+      "taruna", "tarung", "tata", "tatap", "tawar", "tawon", "tayang", "tebal", "tebar", "tebing",
+      "tebu", "tebus", "teduh", "tega", "tegar", "tegas", "tegur", "tekad", "teknis", "teko",
+      "tekuk", "tekun", "telat", "teliti", "teluk", "teman", "tembus", "tempe", "tempel", "tempat",
+      "tempuh", "tempur", "tembok", "tenar", "tenda", "tengah", "tenis", "tensi", "tentu", "tenun",
+      "tenaga", "teori", "tepat", "terang", "teras", "terbit", "terik", "terima", "terjal", "ternak",
+      "terjun", "terus", "tesis", "tetap", "tetapi", "tiada", "tiang", "tiba", "tidak", "tidur",
+      "tiga", "tikar", "tiket", "tilang", "timba", "timbal", "timbul", "timun", "timur", "tinggi",
+      "tinju", "tinjau", "tipis", "tipe", "tipu", "tiris", "tiri", "tisu", "titik", "tiup",
+      "toilet", "tokoh", "toko", "tolak", "tomat", "tong", "topik", "topi", "total", "trofi",
+      "troli", "tropis", "tubuh", "tubruk", "tugas", "tugu", "tujuan", "tujuh", "tukang", "tukar",
+      "tulen", "tulang", "tulis", "tulus", "tumbuk", "tumpah", "tumpu", "tumpuk", "tungku", "tunjuk",
+      "tupai", "tutup", "tutur", "uang", "ubah", "ubin", "ucapan", "udang", "udara", "ujian",
+      "ujung", "ukir", "ukiran", "ukur", "ukuran", "ulah", "ulama", "ulasan", "ulat", "ulet",
+      "ulang", "ulung", "umbi", "umpama", "umpan", "umur", "umum", "umat", "undang", "undi",
+      "undian", "unggas", "unggun", "ungkap", "ungkit", "ungu", "ungsi", "unik", "unit", "unjuk",
+      "unsur", "unta", "untung", "upaya", "urat", "urun", "uruk", "urung", "usang", "usaha",
+      "usia", "usik", "usil", "usung", "usus", "utama", "utang", "utara", "vaksin", "valid",
+      "valuta", "versi", "visi", "vokal", "vonis", "wadah", "waduk", "wajah", "wajan", "wajar",
+      "wajib", "waktu", "walet", "wangi", "wanita", "warna", "warung", "wasiat", "watak", "wayang",
+      "wesel", "wortel", "yakin", "yakni", "yang", "yatim", "yodium", "yoga", "zaman", "zona"
+    ];
+
+    const words4 = rawWordDatabase.filter(w => w.length === 4).map(w => w.toUpperCase());
+    const words5 = rawWordDatabase.filter(w => w.length === 5).map(w => w.toUpperCase());
+    const words6 = rawWordDatabase.filter(w => w.length === 6).map(w => w.toUpperCase());
+
+    /* ================= 2. AUDIO SYNTHESIZER (LANTANG & JERNIH) ================= */
+    let soundEnabled = true;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function triggerHaptic(pattern = 20) {
+      if (navigator.vibrate) {
+        try { navigator.vibrate(pattern); } catch (e) {}
+      }
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.14, gainLvl = 0.45) {
+      if (!soundEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainLvl, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playVictoryChord() {
+      if (!soundEnabled) return;
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+        setTimeout(() => playTone(freq, 'triangle', 0.5, 0.55), idx * 75);
+      });
+    }
+
+    function playErrorSound() {
+      if (!soundEnabled) return;
+      playTone(160, 'sawtooth', 0.22, 0.45);
+      setTimeout(() => playTone(120, 'sawtooth', 0.26, 0.45), 80);
+    }
+
+    /* ================= 3. STATE & LOCAL STORAGE ================= */
+    const STORAGE_KEY = "NEXUS_WORD_SAVE_DATA_V3";
+    let gameState = {
+      level: 1,
+      score: 0,
+      streak: 0,
+      coins: 350,
+      sound: true,
+      lastDate: ""
+    };
+
+    function loadSavedGame() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (data) {
+        try {
+          gameState = { ...gameState, ...JSON.parse(data) };
+        } catch(e) {}
+      }
+      soundEnabled = gameState.sound;
+      updateHeaderHUD();
+      checkDailyBonus();
+    }
+
+    function saveGame() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+    }
+
+    function updateHeaderHUD() {
+      document.getElementById('levelLabel').innerText = `LV. ${gameState.level}`;
+      document.getElementById('scoreVal').innerText = gameState.score;
+      document.getElementById('streakVal').innerText = gameState.streak;
+      document.getElementById('coinVal').innerText = gameState.coins;
+      document.getElementById('soundToggle').style.opacity = soundEnabled ? '1' : '0.4';
+    }
+
+    function checkDailyBonus() {
+      const today = new Date().toISOString().slice(0, 10);
+      if (gameState.lastDate !== today) {
+        setTimeout(() => {
+          document.getElementById('dailyRewardOverlay').classList.add('show');
+        }, 600);
+      }
+    }
+
+    document.getElementById('claimDailyBtn').addEventListener('click', () => {
+      const today = new Date().toISOString().slice(0, 10);
+      gameState.lastDate = today;
+      gameState.coins += 100;
+      saveGame();
+      updateHeaderHUD();
+      playVictoryChord();
+      launchConfetti();
+      document.getElementById('dailyRewardOverlay').classList.remove('show');
+    });
+
+    /* ================= 4. GENERATOR SOAL ACAK & KECOHAN CERDAS ================= */
+    const commonTrapLetters = ["A", "E", "I", "U", "O", "R", "S", "T", "N", "K", "M", "L", "B", "P", "D"];
+
+    function generateRandomStage() {
+      const lengths = [4, 5, 6];
+      const chosenLength = lengths[Math.floor(Math.random() * lengths.length)];
+
+      let pool = words4;
+      if (chosenLength === 5) pool = words5;
+      else if (chosenLength === 6) pool = words6;
+
+      const targetWord = pool[Math.floor(Math.random() * pool.length)];
+      const targetLetters = targetWord.split('');
+      const count = targetWord.length;
+      const distractors = [];
+
+      // 1. Ambil 1-2 huruf kembar dari kata target (sangat mengecoh!)
+      const duplicateCount = Math.min(2, Math.floor(count / 2));
+      for (let i = 0; i < duplicateCount; i++) {
+        const randomTargetChar = targetLetters[Math.floor(Math.random() * targetLetters.length)];
+        distractors.push(randomTargetChar);
+      }
+
+      // 2. Huruf jebakan umum
+      while (distractors.length < count) {
+        const trap = commonTrapLetters[Math.floor(Math.random() * commonTrapLetters.length)];
+        distractors.push(trap);
+      }
+
+      return {
+        answer: targetWord,
+        distractors: distractors
+      };
+    }
+
+    /* ================= 5. LOGIKA WHEEL (RETINA HD SUPERSAMPLING) ================= */
+    let currentStageData = null;
+    let selectedNodes = [];
+    let isDragging = false;
+    let pointerPos = { x: 0, y: 0 };
+    let activeLettersPool = [];
+    let currentHitRadius = 24;
+
+    const wheel = document.getElementById('wheel');
+    const laserCanvas = document.getElementById('laserCanvas');
+    const ctx = laserCanvas.getContext('2d');
+    const targetContainer = document.getElementById('targetContainer');
+    const previewPill = document.getElementById('previewPill');
+    const celebrationOverlay = document.getElementById('celebrationOverlay');
+    const celebrationTitle = document.getElementById('celebrationTitle');
+
+    // Rendering Canvas Tajam HD Mengikuti Rasio Pixel Layar Ponsel
+    function resizeCanvas() {
+      const dpr = Math.max(window.devicePixelRatio || 1, 2);
+      laserCanvas.width = wheel.clientWidth * dpr;
+      laserCanvas.height = wheel.clientHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    function startLevel() {
+      currentStageData = generateRandomStage();
+      const wordLen = currentStageData.answer.length;
+      selectedNodes = [];
+      previewPill.innerText = "";
+      previewPill.classList.remove('active');
+
+      targetContainer.innerHTML = '';
+      let boxW = 48, boxH = 54, fontSize = 23;
+      if (wordLen === 5) { boxW = 42; boxH = 48; fontSize = 20; }
+      else if (wordLen === 6) { boxW = 36; boxH = 42; fontSize = 18; }
+
+      for (let i = 0; i < wordLen; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.style.width = `${boxW}px`;
+        slot.style.height = `${boxH}px`;
+        slot.style.fontSize = `${fontSize}px`;
+        targetContainer.appendChild(slot);
+      }
+
+      activeLettersPool = [...currentStageData.answer.split(''), ...currentStageData.distractors];
+      shuffleLetters(activeLettersPool);
+      spawnWheelNodes(activeLettersPool);
+      drawLaser();
+    }
+
+    function shuffleLetters(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function spawnWheelNodes(letters) {
+      const oldNodes = wheel.querySelectorAll('.letter-node');
+      oldNodes.forEach(n => n.remove());
+
+      const count = letters.length;
+      const radius = 94;
+      const centerX = wheel.clientWidth / 2;
+      const centerY = wheel.clientHeight / 2;
+
+      let nodeSize = 44, nodeFont = 20;
+      currentHitRadius = 24;
+
+      if (count >= 12) {
+        nodeSize = 34; nodeFont = 15; currentHitRadius = 18;
+      } else if (count >= 10) {
+        nodeSize = 38; nodeFont = 17; currentHitRadius = 21;
+      }
+
+      letters.forEach((char, i) => {
+        const angle = (i / count) * 2 * Math.PI - (Math.PI / 2);
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        const node = document.createElement('div');
+        node.className = 'letter-node';
+        node.innerText = char;
+        node.style.width = `${nodeSize}px`;
+        node.style.height = `${nodeSize}px`;
+        node.style.fontSize = `${nodeFont}px`;
+        node.style.left = `${x}px`;
+        node.style.top = `${y}px`;
+        node.dataset.char = char;
+        wheel.appendChild(node);
+      });
+    }
+
+    function drawLaser() {
+      ctx.clearRect(0, 0, wheel.clientWidth, wheel.clientHeight);
+      if (selectedNodes.length === 0) return;
+
+      // Halo Garis Laser Tajam
+      ctx.beginPath();
+      ctx.lineWidth = 8;
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      selectedNodes.forEach((node, idx) => {
+        const x = parseFloat(node.style.left);
+        const y = parseFloat(node.style.top);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      if (isDragging) ctx.lineTo(pointerPos.x, pointerPos.y);
+      ctx.stroke();
+
+      // Inti Putih Neon Laser
+      ctx.beginPath();
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = '#ffffff';
+      selectedNodes.forEach((node, idx) => {
+        const x = parseFloat(node.style.left);
+        const y = parseFloat(node.style.top);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      if (isDragging) ctx.lineTo(pointerPos.x, pointerPos.y);
+      ctx.stroke();
+    }
+
+    /* ================= 6. SENTUHAN & GESTUR HP ================= */
+    wheel.addEventListener('pointerdown', (e) => {
+      initAudio();
+      isDragging = true;
+      updatePointer(e);
+      detectLetter(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      updatePointer(e);
+      detectLetter(e.clientX, e.clientY);
+      drawLaser();
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      evaluateAnswer();
+      drawLaser();
+    });
+
+    function updatePointer(e) {
+      const rect = wheel.getBoundingClientRect();
+      pointerPos.x = e.clientX - rect.left;
+      pointerPos.y = e.clientY - rect.top;
+    }
+
+    function detectLetter(clientX, clientY) {
+      const nodes = wheel.querySelectorAll('.letter-node');
+      nodes.forEach(node => {
+        const rect = node.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dist = Math.hypot(clientX - cx, clientY - cy);
+
+        if (dist < currentHitRadius && !selectedNodes.includes(node)) {
+          selectedNodes.push(node);
+          node.classList.add('active');
+          triggerHaptic(20);
+          playTone(400 + (selectedNodes.length * 85), 'sine', 0.15, 0.45);
+          syncPreview();
+        }
+      });
+    }
+
+    function syncPreview() {
+      const word = selectedNodes.map(n => n.dataset.char).join('');
+      if (word.length > 0) {
+        previewPill.innerText = word;
+        previewPill.classList.add('active');
+      } else {
+        previewPill.classList.remove('active');
+      }
+    }
+
+    /* ================= 7. VALIDASI & SELEBRASI ================= */
+    const kataPujian = ["SEMPURNA!", "LUAR BIASA!", "HEBAT SEKALI!", "SANGAT CERDAS!", "KERJA BAGUS!"];
+
+    function triggerWinCelebration() {
+      triggerHaptic([30, 50, 40]);
+      gameState.score += 150;
+      gameState.streak += 1;
+      gameState.coins += 30;
+      updateHeaderHUD();
+      saveGame();
+
+      playVictoryChord();
+      celebrationTitle.innerText = kataPujian[Math.floor(Math.random() * kataPujian.length)];
+      celebrationOverlay.classList.add('show');
+      launchConfetti();
+    }
+
+    function evaluateAnswer() {
+      const word = selectedNodes.map(n => n.dataset.char).join('');
+      const target = currentStageData.answer;
+
+      if (word === target) {
+        const slots = targetContainer.querySelectorAll('.slot');
+        slots.forEach((s, idx) => {
+          s.innerText = target[idx];
+          s.classList.add('filled');
+        });
+        triggerWinCelebration();
+      } else {
+        if (word.length > 0) {
+          triggerHaptic(60);
+          playErrorSound();
+          gameState.streak = 0;
+          updateHeaderHUD();
+          saveGame();
+
+          const slots = targetContainer.querySelectorAll('.slot');
+          slots.forEach(s => {
+            s.classList.add('shake');
+            setTimeout(() => s.classList.remove('shake'), 450);
+          });
+        }
+        cleanupSelection();
+      }
+    }
+
+    function cleanupSelection() {
+      previewPill.classList.remove('active');
+      selectedNodes.forEach(n => n.classList.remove('active'));
+      selectedNodes = [];
+    }
+
+    document.getElementById('nextLevelBtn').addEventListener('click', () => {
+      celebrationOverlay.classList.remove('show');
+      gameState.level += 1;
+      updateHeaderHUD();
+      saveGame();
+      startLevel();
+    });
+
+    /* ================= 8. LOGIKA ACAK & BANTUAN DI BAWAH ================= */
+    document.getElementById('shuffleBtn').addEventListener('click', () => {
+      triggerHaptic(25);
+      playTone(550, 'triangle', 0.12, 0.45);
+      shuffleLetters(activeLettersPool);
+      spawnWheelNodes(activeLettersPool);
+    });
+
+    // Fitur Bantuan: Terisi satu per satu, dan jika penuh langsung otomatis menang!
+    document.getElementById('hintBtn').addEventListener('click', () => {
+      if (gameState.coins >= 50) {
+        const slots = targetContainer.querySelectorAll('.slot');
+        const emptyIndices = [];
+        slots.forEach((s, i) => { if (!s.innerText.trim()) emptyIndices.push(i); });
+
+        if (emptyIndices.length > 0) {
+          gameState.coins -= 50;
+          updateHeaderHUD();
+          saveGame();
+          triggerHaptic(30);
+
+          const hintIndex = emptyIndices[0];
+          slots[hintIndex].innerText = currentStageData.answer[hintIndex];
+          slots[hintIndex].classList.add('filled');
+          playTone(880, 'sine', 0.25, 0.5);
+
+          const remainingEmpty = [...slots].filter(s => !s.innerText.trim());
+          if (remainingEmpty.length === 0) {
+            setTimeout(() => {
+              triggerWinCelebration();
+            }, 300);
+          }
+        }
+      } else {
+        triggerHaptic(60);
+        playErrorSound();
+      }
+    });
+
+    const soundToggle = document.getElementById('soundToggle');
+    soundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      gameState.sound = soundEnabled;
+      saveGame();
+      soundToggle.style.opacity = soundEnabled ? '1' : '0.4';
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (confirm("Mulai ulang progres ke Level 1? Koin dan skor Anda tetap aman.")) {
+        gameState.level = 1;
+        gameState.streak = 0;
+        updateHeaderHUD();
+        saveGame();
+        startLevel();
+      }
+    });
+
+    /* ================= 9. SISTEM KONFETI (HD RETINA) ================= */
+    const confCanvas = document.getElementById('confettiCanvas');
+    const confCtx = confCanvas.getContext('2d');
+    let confetti = [];
+    let isConfettiActive = false;
+
+    function resizeConfetti() {
+      const dpr = Math.max(window.devicePixelRatio || 1, 2);
+      confCanvas.width = window.innerWidth * dpr;
+      confCanvas.height = window.innerHeight * dpr;
+      confCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    function launchConfetti() {
+      confetti = [];
+      const colors = ['#00f0ff', '#fbbf24', '#f43f5e', '#a855f7', '#38bdf8', '#ffffff'];
+      for (let i = 0; i < 90; i++) {
+        confetti.push({
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+          vx: (Math.random() - 0.5) * 18,
+          vy: (Math.random() - 0.85) * 18,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          tilt: Math.random() * 10,
+          tiltAngle: 0,
+          tiltAngleInc: (Math.random() * 0.07) + 0.05,
+          alpha: 1
+        });
+      }
+      isConfettiActive = true;
+    }
+
+    function renderConfetti() {
+      if (isConfettiActive) {
+        confCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        confetti.forEach((p, idx) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35;
+          p.tiltAngle += p.tiltAngleInc;
+          p.tilt = Math.sin(p.tiltAngle) * 12;
+          p.alpha -= 0.015;
+
+          confCtx.fillStyle = p.color;
+          confCtx.globalAlpha = Math.max(0, p.alpha);
+          confCtx.beginPath();
+          confCtx.rect(p.x + p.tilt, p.y, p.size, p.size * 0.6);
+          confCtx.fill();
+
+          if (p.alpha <= 0) confetti.splice(idx, 1);
+        });
+
+        if (confetti.length === 0) {
+          isConfettiActive = false;
+          confCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        }
+      }
+      requestAnimationFrame(renderConfetti);
+    }
+    renderConfetti();
+
+    // Inisialisasi Game
+    resizeCanvas();
+    loadSavedGame();
+    startLevel();
+  </script>
+</body>
+</html>
