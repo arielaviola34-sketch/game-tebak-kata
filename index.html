@@ -47,11 +47,10 @@
       align-items: center;
       justify-content: flex-start;
       gap: 10px;
-      padding: 10px 12px 14px 12px;
-      overflow: hidden;
+      padding: 10px 12px 20px 12px;
+      overflow-x: hidden;
     }
 
-    /* Background Grid Tajam */
     .bg-grid {
       position: fixed;
       inset: 0;
@@ -225,15 +224,6 @@
       box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75), inset 0 0 30px rgba(0, 240, 255, 0.1);
     }
 
-    .disc-ring-decor {
-      position: absolute;
-      inset: 14px;
-      border-radius: 50%;
-      border: 1.5px dashed rgba(255, 255, 255, 0.18);
-      pointer-events: none;
-      animation: slowRotate 45s linear infinite;
-    }
-
     .wheel-core {
       position: absolute;
       top: 50%;
@@ -326,30 +316,23 @@
       border-radius: 8px;
     }
 
-    /* ================= WATERMARK KREDIT TIKTOK ================= */
-    .creator-credit {
-      position: relative;
-      z-index: 10;
-      margin-top: auto;
-      padding-top: 6px;
+    /* ================= KREDIT TIKTOK ================= */
+    .creator-credit-box {
+      margin-top: 12px;
+      padding: 6px 18px;
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1.5px solid rgba(0, 240, 255, 0.45);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+      font-size: 12px;
+      color: #cbd5e1;
+      letter-spacing: 0.5px;
       text-align: center;
     }
-    .credit-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      font-size: 11px;
-      color: #94a3b8;
-      letter-spacing: 0.5px;
-    }
-    .credit-badge strong {
+    .creator-credit-box strong {
       color: var(--accent-cyan);
-      font-weight: 800;
-      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+      font-weight: 900;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
     }
 
     /* ================= MODAL & POPUP SISTEM ================= */
@@ -418,7 +401,6 @@
       z-index: 99;
     }
 
-    @keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes slotShake {
       10%, 90% { transform: translate3d(-3px, 0, 0); }
       20%, 80% { transform: translate3d(5px, 0, 0); }
@@ -471,12 +453,10 @@
     <div class="preview-pill" id="previewPill"></div>
   </main>
 
-  <!-- ARENA RODA & TOMBOL DI BAWAHNYA -->
+  <!-- ARENA RODA, TOMBOL & KREDIT TIKTOK -->
   <section class="wheel-main-layout">
-    <!-- Roda Lingkaran Huruf -->
     <div class="wheel-container" id="wheel">
       <div class="wheel-disc"></div>
-      <div class="disc-ring-decor"></div>
       <div class="wheel-core">
         <svg viewBox="0 0 24 24">
           <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
@@ -485,7 +465,7 @@
       <canvas id="laserCanvas"></canvas>
     </div>
 
-    <!-- TOMBOL KONTROL DI BAWAH LINGKARAN -->
+    <!-- TOMBOL KONTROL -->
     <div class="bottom-controls-bar">
       <button class="bottom-btn" id="shuffleBtn">
         <svg viewBox="0 0 24 24">
@@ -502,14 +482,12 @@
         <span class="cost-badge">-50 🪙</span>
       </button>
     </div>
-  </section>
 
-  <!-- KREDIT TIKTOK (TAJAM & ELEGAN) -->
-  <footer class="creator-credit">
-    <div class="credit-badge">
-      <span>Dibuat oleh TikTok: <strong>@gabutzzz_2121</strong></span>
+    <!-- TULISAN TIKTOK -->
+    <div class="creator-credit-box">
+      Dibuat oleh TikTok: <strong>@gabutzzz_2121</strong>
     </div>
-  </footer>
+  </section>
 
   <!-- MODAL SELEBRASI BABAK -->
   <div class="modal-overlay" id="celebrationOverlay">
@@ -759,7 +737,7 @@
     const words5 = rawWordDatabase.filter(w => w.length === 5).map(w => w.toUpperCase());
     const words6 = rawWordDatabase.filter(w => w.length === 6).map(w => w.toUpperCase());
 
-    /* ================= 2. AUDIO SYNTHESIZER (LANTANG & JERNIH) ================= */
+    /* ================= 2. AUDIO SYNTHESIZER ================= */
     let soundEnabled = true;
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
@@ -806,7 +784,7 @@
     }
 
     /* ================= 3. STATE & LOCAL STORAGE ================= */
-    const STORAGE_KEY = "NEXUS_WORD_SAVE_DATA_V3";
+    const STORAGE_KEY = "NEXUS_WORD_SAVE_DATA_V6";
     let gameState = {
       level: 1,
       score: 0,
@@ -860,7 +838,7 @@
       document.getElementById('dailyRewardOverlay').classList.remove('show');
     });
 
-    /* ================= 4. GENERATOR SOAL ACAK & KECOHAN CERDAS ================= */
+    /* ================= 4. GENERATOR SOAL (HANYA 3 KECOHAN) ================= */
     const commonTrapLetters = ["A", "E", "I", "U", "O", "R", "S", "T", "N", "K", "M", "L", "B", "P", "D"];
 
     function generateRandomStage() {
@@ -873,18 +851,17 @@
 
       const targetWord = pool[Math.floor(Math.random() * pool.length)];
       const targetLetters = targetWord.split('');
-      const count = targetWord.length;
       const distractors = [];
 
-      // 1. Ambil 1-2 huruf kembar dari kata target (sangat mengecoh!)
-      const duplicateCount = Math.min(2, Math.floor(count / 2));
-      for (let i = 0; i < duplicateCount; i++) {
-        const randomTargetChar = targetLetters[Math.floor(Math.random() * targetLetters.length)];
-        distractors.push(randomTargetChar);
-      }
+      // Tepat 3 huruf kecohan
+      const distractorCount = 3;
 
-      // 2. Huruf jebakan umum
-      while (distractors.length < count) {
+      // 1. Ambil 1 huruf kembar dari target
+      const randomTargetChar = targetLetters[Math.floor(Math.random() * targetLetters.length)];
+      distractors.push(randomTargetChar);
+
+      // 2. Ambil 2 huruf jebakan
+      while (distractors.length < distractorCount) {
         const trap = commonTrapLetters[Math.floor(Math.random() * commonTrapLetters.length)];
         distractors.push(trap);
       }
@@ -895,13 +872,13 @@
       };
     }
 
-    /* ================= 5. LOGIKA WHEEL (RETINA HD SUPERSAMPLING) ================= */
+    /* ================= 5. LOGIKA WHEEL ================= */
     let currentStageData = null;
     let selectedNodes = [];
     let isDragging = false;
     let pointerPos = { x: 0, y: 0 };
     let activeLettersPool = [];
-    let currentHitRadius = 24;
+    let currentHitRadius = 26;
 
     const wheel = document.getElementById('wheel');
     const laserCanvas = document.getElementById('laserCanvas');
@@ -911,7 +888,6 @@
     const celebrationOverlay = document.getElementById('celebrationOverlay');
     const celebrationTitle = document.getElementById('celebrationTitle');
 
-    // Rendering Canvas Tajam HD Mengikuti Rasio Pixel Layar Ponsel
     function resizeCanvas() {
       const dpr = Math.max(window.devicePixelRatio || 1, 2);
       laserCanvas.width = wheel.clientWidth * dpr;
@@ -941,6 +917,7 @@
         targetContainer.appendChild(slot);
       }
 
+      // Total hanya 7, 8, atau 9 huruf
       activeLettersPool = [...currentStageData.answer.split(''), ...currentStageData.distractors];
       shuffleLetters(activeLettersPool);
       spawnWheelNodes(activeLettersPool);
@@ -963,13 +940,13 @@
       const centerX = wheel.clientWidth / 2;
       const centerY = wheel.clientHeight / 2;
 
-      let nodeSize = 44, nodeFont = 20;
-      currentHitRadius = 24;
+      let nodeSize = 46, nodeFont = 22;
+      currentHitRadius = 26;
 
-      if (count >= 12) {
-        nodeSize = 34; nodeFont = 15; currentHitRadius = 18;
-      } else if (count >= 10) {
-        nodeSize = 38; nodeFont = 17; currentHitRadius = 21;
+      if (count === 9) {
+        nodeSize = 42;
+        nodeFont = 19;
+        currentHitRadius = 24;
       }
 
       letters.forEach((char, i) => {
@@ -994,7 +971,6 @@
       ctx.clearRect(0, 0, wheel.clientWidth, wheel.clientHeight);
       if (selectedNodes.length === 0) return;
 
-      // Halo Garis Laser Tajam
       ctx.beginPath();
       ctx.lineWidth = 8;
       ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
@@ -1010,7 +986,6 @@
       if (isDragging) ctx.lineTo(pointerPos.x, pointerPos.y);
       ctx.stroke();
 
-      // Inti Putih Neon Laser
       ctx.beginPath();
       ctx.lineWidth = 3.5;
       ctx.strokeStyle = '#ffffff';
@@ -1024,7 +999,7 @@
       ctx.stroke();
     }
 
-    /* ================= 6. SENTUHAN & GESTUR HP ================= */
+    /* ================= 6. SENTUHAN & GESTUR ================= */
     wheel.addEventListener('pointerdown', (e) => {
       initAudio();
       isDragging = true;
@@ -1140,7 +1115,7 @@
       startLevel();
     });
 
-    /* ================= 8. LOGIKA ACAK & BANTUAN DI BAWAH ================= */
+    /* ================= 8. ACAK & BANTUAN ================= */
     document.getElementById('shuffleBtn').addEventListener('click', () => {
       triggerHaptic(25);
       playTone(550, 'triangle', 0.12, 0.45);
@@ -1148,7 +1123,6 @@
       spawnWheelNodes(activeLettersPool);
     });
 
-    // Fitur Bantuan: Terisi satu per satu, dan jika penuh langsung otomatis menang!
     document.getElementById('hintBtn').addEventListener('click', () => {
       if (gameState.coins >= 50) {
         const slots = targetContainer.querySelectorAll('.slot');
@@ -1197,7 +1171,7 @@
       }
     });
 
-    /* ================= 9. SISTEM KONFETI (HD RETINA) ================= */
+    /* ================= 9. SISTEM KONFETI HD ================= */
     const confCanvas = document.getElementById('confettiCanvas');
     const confCtx = confCanvas.getContext('2d');
     let confetti = [];
@@ -1261,7 +1235,6 @@
     }
     renderConfetti();
 
-    // Inisialisasi Game
     resizeCanvas();
     loadSavedGame();
     startLevel();
