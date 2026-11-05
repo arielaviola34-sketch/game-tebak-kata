@@ -33,21 +33,31 @@
       text-rendering: optimizeLegibility;
     }
 
+    /* KUNCI TOTAL LAYAR (ANTI-SCROLL & ANTI-TARIK) */
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden !important;
+      overscroll-behavior: none !important;
+      touch-action: none !important;
+    }
+
     body {
+      position: fixed;
+      inset: 0;
       background-color: var(--bg-dark);
       background-image: 
         radial-gradient(circle at 50% 5%, rgba(99, 102, 241, 0.28) 0%, transparent 45%),
         radial-gradient(circle at 85% 70%, rgba(244, 63, 94, 0.16) 0%, transparent 40%),
         radial-gradient(circle at 15% 85%, rgba(0, 240, 255, 0.16) 0%, transparent 40%);
       color: #fff;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      gap: 10px;
-      padding: 8px 12px 18px 12px;
-      overflow-x: hidden;
+      gap: 8px;
+      padding: 8px 12px 14px 12px;
     }
 
     .bg-grid {
@@ -70,11 +80,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
+      padding: 7px 12px;
       background: var(--panel-bg);
       border-radius: 16px;
       border: 1.5px solid var(--panel-border);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      flex-shrink: 0;
     }
 
     .stat-group {
@@ -121,14 +132,15 @@
       z-index: 10;
       width: 100%;
       max-width: 390px;
-      padding: 10px 14px;
-      border-radius: 24px;
+      padding: 8px 14px;
+      border-radius: 22px;
       background: #0e1529;
       border: 1.5px solid rgba(0, 240, 255, 0.45);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
       align-items: center;
+      flex-shrink: 0;
     }
 
     .target-container {
@@ -136,14 +148,14 @@
       gap: 6px;
       justify-content: center;
       align-items: center;
-      padding: 4px;
+      padding: 2px;
       max-width: 100%;
     }
 
-    /* UKURAN KOTAK SAMA PERSIS UNTUK 4, 5, DAN 6 KOTAK */
+    /* UKURAN KOTAK SAMA PERSIS (4, 5, DAN 6 KOTAK) */
     .slot {
       width: 44px;
-      height: 50px;
+      height: 48px;
       border-radius: 12px;
       background: #18223d;
       border: 2px solid rgba(99, 102, 241, 0.6);
@@ -151,7 +163,7 @@
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 21px;
+      font-size: 20px;
       color: #fff;
       text-transform: uppercase;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
@@ -173,10 +185,10 @@
     }
 
     .preview-pill {
-      height: 30px;
+      height: 28px;
       min-width: 110px;
       padding: 0 16px;
-      margin-top: 6px;
+      margin-top: 5px;
       border-radius: 20px;
       background: #0a0e1c;
       border: 1.5px solid rgba(0, 240, 255, 0.6);
@@ -184,7 +196,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: 3px;
       color: var(--accent-cyan);
@@ -204,22 +216,23 @@
       z-index: 10;
       width: 100%;
       max-width: 390px;
-      padding: 14px 12px;
-      border-radius: 32px;
+      padding: 12px 10px;
+      border-radius: 28px;
       background: #0e1529;
       border: 1.5px solid rgba(99, 102, 241, 0.5);
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     .wheel-container {
       position: relative;
       width: 250px;
       height: 250px;
-      touch-action: none;
+      touch-action: none !important;
       flex-shrink: 0;
     }
 
@@ -249,7 +262,6 @@
     }
     .wheel-core svg { width: 20px; height: 20px; fill: var(--accent-cyan); }
 
-    /* SISTEM VEKTOR SVG HD */
     svg#laserSvg {
       position: absolute;
       top: 0;
@@ -284,10 +296,9 @@
       box-shadow: 0 0 18px rgba(0, 240, 255, 0.95);
     }
 
-    /* TOMBOL KONTROL */
     .bottom-controls-bar {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       justify-content: center;
       align-items: center;
       width: 100%;
@@ -299,8 +310,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 10px 14px;
+      gap: 7px;
+      padding: 9px 12px;
       background: #192138;
       border: 1.5px solid rgba(255, 255, 255, 0.22);
       border-radius: 14px;
@@ -313,7 +324,7 @@
       transform: scale(0.93);
       border-color: var(--accent-cyan);
     }
-    .bottom-btn svg { width: 20px; height: 20px; fill: currentColor; }
+    .bottom-btn svg { width: 19px; height: 19px; fill: currentColor; }
     .bottom-btn .btn-text { font-size: 13px; font-weight: 800; letter-spacing: 0.8px; }
     .bottom-btn .cost-badge {
       font-size: 11px;
@@ -324,9 +335,8 @@
       border-radius: 8px;
     }
 
-    /* KREDIT TIKTOK */
     .creator-credit-box {
-      padding: 5px 16px;
+      padding: 4px 15px;
       border-radius: 20px;
       background: #090e1a;
       border: 1.5px solid rgba(0, 240, 255, 0.45);
@@ -340,14 +350,14 @@
       font-weight: 900;
     }
 
-    /* TULISAN TAUTAN PALING BAWAH */
     .footer-web-link {
       position: relative;
       z-index: 10;
-      margin-top: 4px;
+      margin-top: auto;
       text-align: center;
       font-size: 11px;
       color: #94a3b8;
+      flex-shrink: 0;
     }
     .footer-web-link a {
       color: var(--accent-cyan);
@@ -391,9 +401,32 @@
       font-weight: 900;
       letter-spacing: 1.5px;
       color: var(--accent-cyan);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
-    .modal-desc { font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 16px; }
+
+    .solved-word-badge {
+      margin: 10px auto 14px auto;
+      padding: 8px 18px;
+      border-radius: 16px;
+      background: #090e1c;
+      border: 1.5px solid rgba(0, 240, 255, 0.55);
+      display: inline-block;
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.3);
+    }
+    .solved-word-title {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .solved-word-text {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--accent-cyan);
+      letter-spacing: 5px;
+    }
 
     .modal-btn {
       width: 100%;
@@ -479,7 +512,6 @@
         </svg>
       </div>
 
-      <!-- SISTEM VEKTOR SVG HD -->
       <svg id="laserSvg" viewBox="0 0 250 250">
         <path id="laserGlow" fill="none" stroke="rgba(0, 240, 255, 0.45)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
         <path id="laserCore" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
@@ -519,7 +551,13 @@
   <div class="modal-overlay" id="celebrationOverlay">
     <div class="modal-card">
       <div class="modal-title" id="celebrationTitle">LUAR BIASA!</div>
-      <div class="modal-desc">Kata berhasil terhubung dengan tepat!</div>
+      
+      <!-- ELEMEN KATA JAWABAN BENAR -->
+      <div class="solved-word-badge">
+        <div class="solved-word-title">Jawaban Benar</div>
+        <div class="solved-word-text" id="solvedWordDisplay">KOTA</div>
+      </div>
+
       <div style="font-weight: 800; color: var(--accent-gold); margin-bottom: 16px;">+150 SKOR &nbsp;•&nbsp; +30 🪙</div>
       <button class="modal-btn" id="nextLevelBtn">LANJUTKAN</button>
     </div>
@@ -538,6 +576,11 @@
   <canvas id="confettiCanvas"></canvas>
 
   <script>
+    /* ================= PENGUNCI LAYAR ANTI-SCROLL (JS LEVEL) ================= */
+    document.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    }, { passive: false });
+
     /* ================= 1. DATABASE KATA ASLI ================= */
     const rawWordDatabase = [
       "abad", "abadi", "abah", "abdi", "abon", "acak", "adab", "adalah", "adegan", "adem",
@@ -810,7 +853,7 @@
     }
 
     /* ================= 3. STATE & LOCAL STORAGE ================= */
-    const STORAGE_KEY = "NEXUS_WORD_SAVE_DATA_V10";
+    const STORAGE_KEY = "NEXUS_WORD_SAVE_DATA_V12";
     let gameState = {
       level: 1,
       score: 0,
@@ -864,13 +907,12 @@
       document.getElementById('dailyRewardOverlay').classList.remove('show');
     });
 
-    /* ================= 4. GENERATOR KATA & PENG鈍COH SANGAT MENGECOH ================= */
+    /* ================= 4. GENERATOR KATA & PENGECOH CERDAS ================= */
     function getSmartDeceptiveDistractors(targetWord) {
       const targetLen = targetWord.length;
       const targetChars = targetWord.split('');
       const distractors = [];
 
-      // 1. Cari kata-kata jebakan di database yang sangat mirip (beda 1-2 huruf saja)
       const trapCandidates = rawWordDatabase.filter(w => {
         const upper = w.toUpperCase();
         if (upper === targetWord) return false;
@@ -887,7 +929,6 @@
         return match >= targetLen - 1;
       });
 
-      // Ambil huruf yang melengkapi kata-kata jebakan tersebut
       for (let trapWord of trapCandidates) {
         const upper = trapWord.toUpperCase();
         const tempTarget = [...targetChars];
@@ -904,13 +945,11 @@
         if (distractors.length >= 3) break;
       }
 
-      // 2. Jika kurang, tambahkan 1 huruf kembar dari kata target
       if (distractors.length < 3) {
         const randomTargetChar = targetChars[Math.floor(Math.random() * targetChars.length)];
         distractors.push(randomTargetChar);
       }
 
-      // 3. Jika masih kurang, lengkapi dengan huruf umum bahasa Indonesia yang paling menjebak
       const commonTraps = ["A", "E", "S", "R", "N", "T", "K", "L", "O", "I", "M", "P", "B", "D"];
       while (distractors.length < 3) {
         const trap = commonTraps[Math.floor(Math.random() * commonTraps.length)];
@@ -937,7 +976,7 @@
       };
     }
 
-    /* ================= 5. LOGIKA WHEEL (ANTI-TERBENTUK BERURUTAN) ================= */
+    /* ================= 5. LOGIKA WHEEL ================= */
     let currentStageData = null;
     let selectedNodes = [];
     let isDragging = false;
@@ -952,6 +991,7 @@
     const previewPill = document.getElementById('previewPill');
     const celebrationOverlay = document.getElementById('celebrationOverlay');
     const celebrationTitle = document.getElementById('celebrationTitle');
+    const solvedWordDisplay = document.getElementById('solvedWordDisplay');
 
     function startLevel() {
       currentStageData = generateRandomStage();
@@ -969,13 +1009,11 @@
 
       activeLettersPool = [...currentStageData.answer.split(''), ...currentStageData.distractors];
       
-      // Acak dengan algoritma perlindungan agar kata jawaban tidak terbentuk berurutan di lingkaran
       safeCircularShuffle(activeLettersPool, currentStageData.answer);
       spawnWheelNodes(activeLettersPool);
       drawLaser();
     }
 
-    // ALGORITMA: MENJAMIN KATA TARGET TIDAK PERNAH URUT DI LINGKARAN
     function safeCircularShuffle(arr, targetWord) {
       let attempts = 0;
       do {
@@ -984,7 +1022,6 @@
           [arr[i], arr[j]] = [arr[j], arr[i]];
         }
 
-        // Gandakan string untuk memeriksa alur melingkar (searah & berlawanan jarum jam)
         const circleStr = arr.join('') + arr.join('');
         const revCircleStr = [...arr].reverse().join('') + [...arr].reverse().join('');
 
@@ -992,7 +1029,6 @@
         const prefix3 = targetWord.slice(0, 3);
         const containsPrefix = circleStr.includes(prefix3) || revCircleStr.includes(prefix3);
 
-        // Jika tidak terbentuk kata target maupun 3 huruf pertamanya berjejer, pengacakan sah!
         if (!containsTarget && !containsPrefix) {
           break;
         }
@@ -1058,7 +1094,7 @@
       laserCore.setAttribute('d', pathStr);
     }
 
-    /* ================= 6. SENTUHAN & GESTUR (GARIS TERKUNCI DALAM LINGKARAN) ================= */
+    /* ================= 6. SENTUHAN & GESTUR HP (TERKUNCI DI DALAM LINGKARAN) ================= */
     wheel.addEventListener('pointerdown', (e) => {
       initAudio();
       isDragging = true;
@@ -1087,7 +1123,7 @@
       const rawX = (e.clientX - rect.left) * scaleX;
       const rawY = (e.clientY - rect.top) * scaleY;
 
-      // Garis tidak bisa keluar dari batas lingkaran
+      // Garis terkurung di dalam lingkaran
       const dx = rawX - 125;
       const dy = rawY - 125;
       const dist = Math.hypot(dx, dy);
@@ -1143,6 +1179,9 @@
 
       playVictoryChord();
       celebrationTitle.innerText = kataPujian[Math.floor(Math.random() * kataPujian.length)];
+      
+      solvedWordDisplay.innerText = currentStageData.answer;
+      
       celebrationOverlay.classList.add('show');
       launchConfetti();
     }
